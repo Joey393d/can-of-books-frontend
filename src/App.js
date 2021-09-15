@@ -46,8 +46,20 @@ class App extends React.Component {
 
 
     this.setState({
-      books:[newBook, this.state.books]
+      books: this.state.books.concat(newBook)
+      // books:[newBook, this.state.books]
     })
+
+    this.fetchBooks();
+  }
+
+
+  handleUpdate = async (bookId, bookInfo) => {
+    let apiUrl = `${SERVER}/books/${bookId}`;
+    await axios.put(apiUrl, bookInfo);
+
+   
+    await this.fetchBooks();
   }
 
 
@@ -60,8 +72,8 @@ class App extends React.Component {
 
 
   this.setState(state => ({
-    // Filter out the deleted cat
-    cats: state.books.filter(book => book.id !== bookId)
+    
+    books: state.books.filter(book => book._id !== bookId)
   }));
 }
 
@@ -99,10 +111,12 @@ class App extends React.Component {
               <h2>Books!</h2>
               {this.state.books.map(book => (
                 <Book
-                key={book.id}
+                key={book._id}
                 book={book}
-
                 onDelete={this.handleDelete}
+                onUpdate={this.handleUpdate}
+
+                
                 />
               ))}
               </>
