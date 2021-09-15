@@ -6,7 +6,7 @@ export default class CreateBook extends React.Component {
 
     let elements = event.target.elements;
     let formData = {
-      name: elements.name.value,
+      title: elements.name.value,
       description: elements.description.value,
     }
     console.log('saving', formData);

@@ -100,7 +100,6 @@ class App extends React.Component {
               {this.state.books.map(book => (
                 <Book
                 key={book.id}
-                bookname={book.name}
                 book={book}
 
                 onDelete={this.handleDelete}

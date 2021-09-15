@@ -9,8 +9,8 @@ class Book extends React.Component {
 
     return (
       <p>
-        <button onClick={() => onDelete(book._id)}>&times;</button>
-          {book.name} : {book.description}
+        <button onClick={() => onDelete(book.id)}>&times;</button>
+          {book.title} : {book.description}
       </p>
     )
   }
