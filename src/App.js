@@ -18,8 +18,17 @@ const SERVER = process.env.REACT_APP_SERVER;
 
 
 class App extends React.Component {
-  state = { books: [] };
+  state = { books: null,
+  showAddBook: false,
+ };
 
+
+
+ toggleShowAddBook = () => {
+   this.setState({
+     showAddBook: !this.state.showAddBook,
+   });
+ }
  
   componentDidMount() {
     this.fetchBooks();
@@ -109,6 +118,20 @@ class App extends React.Component {
             {this.state.books.length > 0 &&
             <>
               <h2>Books!</h2>
+              {!this.state.showAddBook &&
+                <button onClick = {this.toggleShowAddBook}>
+                  Add book!
+                  </button>
+              }
+
+              <CreateBook
+              show = {this.state.showAddBook}
+              onCancel = {this.toggleShowAddBook}
+              onSave={this.handleSave}
+              />
+
+
+
               {this.state.books.map(book => (
                 <Book
                 key={book._id}

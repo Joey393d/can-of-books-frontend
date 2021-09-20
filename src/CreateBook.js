@@ -18,14 +18,24 @@ export default class CreateBook extends React.Component {
   }
 
   render() {
+    const { show, onCancel } = this.props;
+
+    if (!show) return null;
+
+
     return (
+   
       <form method="post" onSubmit={this.handleSubmit}>
         <input placeholder="title" name="title" />
         <input placeholder="description" name="description" />
         <button type="submit">
           Save!
         </button>
+        <button type="button" onClick={onCancel}>
+          Cancel
+        </button>
       </form>
+       
     )
   }
 }
