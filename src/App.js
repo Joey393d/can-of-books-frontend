@@ -9,7 +9,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import { withAuth0 } from '@auth0/auth0-react';
+import { withAuth0 } from 'auth0';
 import Book from './book'
 import axios from 'axios';
 import CreateBook from './CreateBook';
@@ -19,33 +19,73 @@ const SERVER = process.env.REACT_APP_SERVER;
 
 
 class App extends React.Component {
-  state = { books: null,
-  showAddBook: false,
- };
+  state = {
+    books: null,
+    showAddBook: false,
+  };
+
+  toggleShowAddBook = () => {
+    this.setState({
+      showAddBook: !this.state.showAddBook,
+    });
+  }
 
 
 
- toggleShowAddBook = () => {
-   this.setState({
-     showAddBook: !this.state.showAddBook,
-   });
+ componentDidUpdate() {
+   if (!this.state.books)
+   this.fetchBooks();
+
  }
+
+
+ async fetchBooks() {
+  const { auth0 } = this.props;
+  if (!auth0.isAuthenticated) {
+    return; 
+  }
+
+  let claims = await auth0.getIdTokenClaims();
+  console.log(claims);
+  
+  let jwt = claims.__raw;
+
+  let apiUrl = `${SERVER}/cats`;
+  try {
+    // TODO: filter by location!
+    let results = await axios.get(apiUrl, {
+      headers: {
+        // Use Authorization header for Authentication
+        'Authorization': `Bearer ${jwt}`,
+      },
+    });
+    this.setState({ cats: results.data });
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
  
-  componentDidMount() {
-    this.fetchBooks();
-  }
 
-  async fetchBooks() {
-    let apiUrl = `${process.env.REACT_APP_SERVER}/books`;
 
-    try {
-      let results = await axios.get(apiUrl);
-      this.setState({ books: results.data });
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
+ 
+
+
+
+ 
+  
+
+  // async fetchBooks() {
+  //   let apiUrl = `${process.env.REACT_APP_SERVER}/books`;
+
+  //   try {
+  //     let results = await axios.get(apiUrl);
+  //     this.setState({ books: results.data });
+  //   }
+  //   catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   handleSave = async bookInfo => {
     let apiUrl = `${SERVER}/books`;
@@ -130,7 +170,9 @@ class App extends React.Component {
             </Route>
             <Route exact path="/books">
             <CreateBook onSave={this.handleSave} />
-            {this.state.books.length > 0 &&
+            {this.state.books &&
+            
+            this.state.books.length > 0 &&
             <>
               <h2>Books!</h2>
               {!this.state.showAddBook &&
