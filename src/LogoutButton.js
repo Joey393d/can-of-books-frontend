@@ -1,14 +1,16 @@
-import { Component } from "react";
+import React from 'react';
+import { withAuth0 } from 'auth0';
 
-class LogoutButton extends Component {
-
+class LogoutButton extends React.Component {
   render() {
+    const { logout } = this.props.auth0;
+
     return (
-      <button onClick={this.props.onLogout}>
+      <button onClick={() => logout({ returnTo: window.location.origin })}>
         Log Out
       </button>
     );
   }
-};
+}
 
-export default LogoutButton;
+export default withAuth0(LogoutButton);
