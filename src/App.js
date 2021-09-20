@@ -1,5 +1,6 @@
 import React from 'react';
-
+import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 import Footer from './Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
@@ -8,7 +9,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-
+import { withAuth0 } from '@auth0/auth0-react';
 import Book from './book'
 import axios from 'axios';
 import CreateBook from './CreateBook';
@@ -99,6 +100,10 @@ class App extends React.Component {
   }
 
   render() {
+
+    const { auth0 } = this.props;
+    console.log('auth0 in App', auth0);
+
     return (
       <>
         <Router>
@@ -106,7 +111,17 @@ class App extends React.Component {
             <h1>World of Books</h1>
             <Link to="/">Home</Link>
             <Link to="/books">Books</Link>
-            
+            {auth0.isLoading
+              ? <p>Spinner</p>
+              : auth0.isAuthenticated
+                ? (
+                  <>
+                    Welcome back, {auth0.user.nickname}
+                    <LogoutButton />
+                  </>
+                )
+                : <LoginButton />}
+
           </nav>
           {/* <Header user={this.state.user} onLogout={this.logoutHandler} /> */}
           <Switch>
@@ -154,4 +169,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withAuth0(App);
